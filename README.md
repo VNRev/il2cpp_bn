@@ -1,13 +1,53 @@
-# Sample Plugin
-Author: **Vector 35 Inc**
+# il2cppdumper 2 bn
 
-_This is a short description meant to fit on one line._
+将il2cppdumper的符号信息导入binaryninja中，就像使用其自带的脚本导入ida中一样
 
-## Description:
-This is a longer description meant for a sample plugin that demonstrates the metadata format for Binary Ninja plugins. Note that the [community-plugins repo](https://github.com/Vector35/community-plugins) contains a useful [utility](https://github.com/Vector35/community-plugins/blob/master/generate_plugininfo.py) to validate the plugin.json. Additionally, the [release helper](https://github.com/Vector35/release_helper) plugin is helpful for more easily pushing new releases, incrementing versions, and creating the appropriate GitHub tags.
+实现了
 
-Note that originally we recommended specifying the contents of this entire file inside of the [plugin.json](./plugin.json) but the latest repository generator will use the readme contents directly which means you should simply leave an empty longdescription field. 
+更改函数名称及声明 并将声明自动注释
+![Alt text](image.png)
 
-## License
+导入string并注释
 
-This plugin is released under an [MIT license](./license).
+![Alt text](image-1.png)
+
+
+# 使用方法
+
+先使用il2cpp获取script.json和il2cpp.h
+
+在il2cpp.h的头部增加
+
+(64位)
+```
+#define intptr_t int64_t
+#define uintptr_t uint64_t
+```
+
+然后使用bn的内置功能 ctrl+p  搜索 'Import Header File'
+
+导入il2cpp.h
+
+然后使用插件 
+选择script.json
+再选择il2cpp.h
+
+等待即可
+
+
+# 不足
+
+1.太慢啦
+
+涉及到bv.parse_type_string(signature)时会非常慢
+
+在不更改函数声明时只需要数分钟 （使用no struct选项
+
+而更改函数声明时需要数个小时 （macbook air m1
+
+在此期间会完全无响应 （导致加的进度条无效
+
+
+2.没有找到自动导入头文件的api函数 只能手动导入
+
+
