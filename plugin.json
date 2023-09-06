@@ -2,10 +2,6 @@
   "pluginmetadataversion": 2,
   "name": "il2cpp_bn",
   "type": [
-    "core",
-    "ui",
-    "architecture",
-    "binaryview",
     "helper"
   ],
   "api": [
@@ -24,7 +20,7 @@
   ],
   "dependencies": {
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "ltlly",
   "minimumbinaryninjaversion": 3164
 }

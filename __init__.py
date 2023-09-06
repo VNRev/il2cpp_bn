@@ -161,6 +161,7 @@ def make_ScriptString(bv: BinaryView, data=None):
             value = scriptString["Value"]
             name = "StringLiteral_" + str(index)
             set_name(bv, addr, name, False)
+            bv.set_comment_at(addr, value)
             index += 1
     bv.set_analysis_hold(False)
     print("ScriptString  finished!")
