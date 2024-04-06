@@ -88,8 +88,8 @@ def set_name(bv, addr, name, isFunc=True):
         if bv.get_data_var_at(addr):
             bv.get_data_var_at(addr).name = name
         else:
-            bv.define_user_data_var(addr, "char*")
-            bv.get_data_var_at(addr).name = name
+            #设置为char*
+            bv.define_user_data_var(addr, Type.pointer(bv.arch, Type.char()), name)
         bv.set_comment_at(addr, name)
     else:
         # 设置函数的名称
@@ -101,6 +101,7 @@ def set_name(bv, addr, name, isFunc=True):
 
 
 def make_function(bv, start, end):
+    # print(start)
     funcset = set()
     for x in range(start, end):
         try:
@@ -168,6 +169,7 @@ def make_ScriptString(bv: BinaryView, data=None):
 
 
 def make_ScriptMetadataMethod(bv: BinaryView, data=None):
+    #实际上是储存了method的地址的变量
     if data is None:
         import json
         path = get_open_filename_input("script.json")
@@ -290,9 +292,9 @@ def make_ScriptMetadata_type(bv: BinaryView, data=None):
 
 
 def make_func(bv: BinaryView, data=None):
-    show_message_box("il2cpp_bn",
-                     "use 'Import Header File' first!(import il2cpp.h \nand add\n '#define intptr_t int64_t  \n#define uintptr_t uint64_t' \n (x64))   \n then choose script.json",
-                     MessageBoxButtonSet.OKButtonSet, MessageBoxIcon.InformationIcon)
+    # show_message_box("il2cpp_bn",
+    #                  "use 'Import Header File' first!(import il2cpp.h \nand add\n '#define intptr_t int64_t  \n#define uintptr_t uint64_t' \n (x64))   \n then choose script.json",
+    #                  MessageBoxButtonSet.OKButtonSet, MessageBoxIcon.InformationIcon)
     if data is None:
         import json
         path = get_open_filename_input("script.json")
@@ -315,15 +317,15 @@ def make_func(bv: BinaryView, data=None):
         for scriptMethod in scriptMethods:
             addr = get_addr(bv, addr=scriptMethod["Address"])
             make_function(bv, addr, addr + 0x1)
-    if "ScriptMetadataMethod" in data and "ScriptMetadataMethod" in processFields:
-        scriptMetadataMethods: object = data["ScriptMetadataMethod"]
-        for scriptMetadataMethod in scriptMetadataMethods:
-            addr = get_addr(bv, addr=scriptMetadataMethod["Address"])
-            methodAddr = get_addr(bv, addr=scriptMetadataMethod["MethodAddress"])
-            if bv.get_data_var_at(methodAddr) is None:
-                make_function(bv, methodAddr, methodAddr + 0x1)
-            if bv.get_data_var_at(addr) is None:
-                make_function(bv, addr, addr + 0x1)
+    # if "ScriptMetadataMethod" in data and "ScriptMetadataMethod" in processFields:
+    #     scriptMetadataMethods: object = data["ScriptMetadataMethod"]
+    #     for scriptMetadataMethod in scriptMetadataMethods:
+    #         addr = get_addr(bv, addr=scriptMetadataMethod["Address"])
+    #         methodAddr = get_addr(bv, addr=scriptMetadataMethod["MethodAddress"])
+    #         if bv.get_data_var_at(methodAddr) is None:
+    #             make_function(bv, methodAddr, methodAddr + 0x1)
+    #         if bv.get_data_var_at(addr) is None:
+    #             make_function(bv, addr, addr + 0x1)
     print("make function finished!")
 
 
