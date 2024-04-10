@@ -105,16 +105,18 @@ def make_function(bv, start, end):
     funcset = set()
 
     while pos < end:
-        pos = bv.get_next_function_start_after(pos)
-        funcset.add(bv.get_functions_containing(pos)[0])
-    # for x in range(start, end,4):
-    #     try:
-    #         func = bv.get_functions_containing(x)[0]
-    #         if not func.name.startswith("sub_"):
-    #             return
-    #         funcset.add(func)
-    #     except:
-    #         pass
+        try:
+            pos = bv.get_next_function_start_after(pos)
+            funcset.add(bv.get_functions_containing(pos)[0])
+        except:
+            pos += 1
+            try:
+                func = bv.get_functions_containing(pos)[0]
+                if not func.name.startswith("sub_"):
+                    return
+                funcset.add(func)
+            except:
+                pass
     if len(funcset) != 1:
         for x in funcset:
             bv.remove_user_function(x)
@@ -156,8 +158,6 @@ def make_ScriptString(bv: BinaryView, data=None):
         "ScriptMetadataMethod",
         "Addresses",
     ]
-    bv.set_analysis_hold(True)
-    # bv.set_analysis_hold(True)
     if "ScriptString" in data and "ScriptString" in processFields:
         index = 1
         scriptStrings = data["ScriptString"]
@@ -168,7 +168,6 @@ def make_ScriptString(bv: BinaryView, data=None):
             set_name(bv, addr, name, False)
             bv.set_comment_at(addr, value)
             index += 1
-    bv.set_analysis_hold(False)
     print("ScriptString  finished!")
 
 
@@ -185,7 +184,6 @@ def make_ScriptMetadataMethod(bv: BinaryView, data=None):
         "ScriptMetadataMethod",
         "Addresses",
     ]
-    bv.set_analysis_hold(True)
     if "ScriptMetadataMethod" in data and "ScriptMetadataMethod" in processFields:
         scriptMetadataMethods: object = data["ScriptMetadataMethod"]
         for scriptMetadataMethod in scriptMetadataMethods:
@@ -195,7 +193,6 @@ def make_ScriptMetadataMethod(bv: BinaryView, data=None):
             set_name(bv, methodAddr, name, True)
             set_name(bv, addr, name, False)
             bv.set_comment_at(addr, f'{name} {hex(methodAddr)}')
-    bv.set_analysis_hold(False)
     print("ScriptMetadataMethod finished!")
 
 
@@ -259,7 +256,6 @@ def make_ScriptMethod_type(bv: BinaryView, data=None):
         "ScriptMetadataMethod",
         "Addresses",
     ]
-    bv.set_analysis_hold(True)
     if "ScriptMethod" in data and "ScriptMethod" in processFields:
         scriptMethods = data["ScriptMethod"]
         for scriptMethod in scriptMethods:
@@ -267,7 +263,6 @@ def make_ScriptMethod_type(bv: BinaryView, data=None):
             if scriptMethod["Signature"] is not None:
                 signature = scriptMethod["Signature"]
                 apply_func_type(bv, addr, signature)
-    bv.set_analysis_hold(False)
     print("ScriptMethod-type  finished!")
 
 
@@ -283,7 +278,6 @@ def make_ScriptMetadata_type(bv: BinaryView, data=None):
         "ScriptMetadataMethod",
         "Addresses",
     ]
-    bv.set_analysis_hold(True)
     if "ScriptMetadata" in data and "ScriptMetadata" in processFields:
         scriptMetadatas = data["ScriptMetadata"]
         for scriptMetadata in scriptMetadatas:
@@ -291,14 +285,11 @@ def make_ScriptMetadata_type(bv: BinaryView, data=None):
             if scriptMetadata["Signature"] is not None:
                 signature = scriptMetadata["Signature"]
                 apply_data_type(bv, addr, signature)
-    bv.set_analysis_hold(False)
     print("ScriptMetadata-type finished!")
 
 
 def make_func(bv: BinaryView, data=None):
-    # show_message_box("il2cpp_bn",
-    #                  "use 'Import Header File' first!(import il2cpp.h \nand add\n '#define intptr_t int64_t  \n#define uintptr_t uint64_t' \n (x64))   \n then choose script.json",
-    #                  MessageBoxButtonSet.OKButtonSet, MessageBoxIcon.InformationIcon)
+
     if data is None:
         import json
         path = get_open_filename_input("script.json")
@@ -337,7 +328,8 @@ def all_recover(bv):
     import json
     path = get_open_filename_input("script.json")
     data = json.loads(open(path, 'rb').read().decode('utf-8'))
-    make_func(bv, data)
+    # make_func(bv, data)
+    # bv.update_analysis_and_wait()
     make_ScriptString(bv, data)
     make_ScriptMetadataMethod(bv, data)
     make_ScriptMetadata_name(bv, data)
@@ -348,10 +340,10 @@ def all_recover(bv):
 
 
 PluginCommand.register("il2cpp_bn\\1.make_func", "", make_func)
-PluginCommand.register("il2cpp_bn\\2.ScriptString", "", make_ScriptString)
-PluginCommand.register("il2cpp_bn\\3.ScriptMetadataMethod", "", make_ScriptMetadataMethod)
-PluginCommand.register("il2cpp_bn\\4.ScriptMetadata_name", "", make_ScriptMetadata_name)
-PluginCommand.register("il2cpp_bn\\5.ScriptMethod_name", "", make_ScriptMethod_name)
-PluginCommand.register("il2cpp_bn\\6.ScriptMethod_type", "", make_ScriptMethod_type)
-PluginCommand.register("il2cpp_bn\\7.ScriptMetadata_type", "", make_ScriptMetadata_type)
-PluginCommand.register("il2cpp_bn\\8.all_recover", "", all_recover)
+# PluginCommand.register("il2cpp_bn\\2.ScriptString", "", make_ScriptString)
+# PluginCommand.register("il2cpp_bn\\3.ScriptMetadataMethod", "", make_ScriptMetadataMethod)
+# PluginCommand.register("il2cpp_bn\\4.ScriptMetadata_name", "", make_ScriptMetadata_name)
+# PluginCommand.register("il2cpp_bn\\5.ScriptMethod_name", "", make_ScriptMethod_name)
+# PluginCommand.register("il2cpp_bn\\6.ScriptMethod_type", "", make_ScriptMethod_type)
+# PluginCommand.register("il2cpp_bn\\7.ScriptMetadata_type", "", make_ScriptMetadata_type)
+PluginCommand.register("il2cpp_bn\\2.recover Info", "", all_recover)
