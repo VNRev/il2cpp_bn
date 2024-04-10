@@ -289,7 +289,6 @@ def make_ScriptMetadata_type(bv: BinaryView, data=None):
 
 
 def make_func(bv: BinaryView, data=None):
-
     if data is None:
         import json
         path = get_open_filename_input("script.json")
@@ -324,12 +323,10 @@ def make_func(bv: BinaryView, data=None):
     print("make function finished!")
 
 
-def all_recover(bv):
+def import_info(bv):
     import json
     path = get_open_filename_input("script.json")
     data = json.loads(open(path, 'rb').read().decode('utf-8'))
-    # make_func(bv, data)
-    # bv.update_analysis_and_wait()
     make_ScriptString(bv, data)
     make_ScriptMetadataMethod(bv, data)
     make_ScriptMetadata_name(bv, data)
@@ -346,4 +343,4 @@ PluginCommand.register("il2cpp_bn\\1.make_func", "", make_func)
 # PluginCommand.register("il2cpp_bn\\5.ScriptMethod_name", "", make_ScriptMethod_name)
 # PluginCommand.register("il2cpp_bn\\6.ScriptMethod_type", "", make_ScriptMethod_type)
 # PluginCommand.register("il2cpp_bn\\7.ScriptMetadata_type", "", make_ScriptMetadata_type)
-PluginCommand.register("il2cpp_bn\\2.recover Info", "", all_recover)
+PluginCommand.register("il2cpp_bn\\2.recover Info", "", import_info)
