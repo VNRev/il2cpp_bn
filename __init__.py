@@ -1,7 +1,6 @@
 from binaryninja import *
 
-
-# bv: BinaryView
+bv: BinaryView
 
 
 class MyType():
@@ -88,7 +87,7 @@ def set_name(bv, addr, name, isFunc=True):
         if bv.get_data_var_at(addr):
             bv.get_data_var_at(addr).name = name
         else:
-            #设置为char*
+            # 设置为char*
             bv.define_user_data_var(addr, Type.pointer(bv.arch, Type.char()), name)
         bv.set_comment_at(addr, name)
     else:
@@ -102,15 +101,20 @@ def set_name(bv, addr, name, isFunc=True):
 
 def make_function(bv, start, end):
     # print(start)
+    pos = start - 1
     funcset = set()
-    for x in range(start, end):
-        try:
-            func = bv.get_functions_containing(x)[0]
-            if not func.name.startswith("sub_"):
-                return
-            funcset.add(func)
-        except:
-            pass
+
+    while pos < end:
+        pos = bv.get_next_function_start_after(pos)
+        funcset.add(bv.get_functions_containing(pos)[0])
+    # for x in range(start, end,4):
+    #     try:
+    #         func = bv.get_functions_containing(x)[0]
+    #         if not func.name.startswith("sub_"):
+    #             return
+    #         funcset.add(func)
+    #     except:
+    #         pass
     if len(funcset) != 1:
         for x in funcset:
             bv.remove_user_function(x)
@@ -169,7 +173,7 @@ def make_ScriptString(bv: BinaryView, data=None):
 
 
 def make_ScriptMetadataMethod(bv: BinaryView, data=None):
-    #实际上是储存了method的地址的变量
+    # 实际上是储存了method的地址的变量
     if data is None:
         import json
         path = get_open_filename_input("script.json")

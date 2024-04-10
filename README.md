@@ -1,4 +1,3 @@
-# 中文
 
 ## il2cpp_bn
 
@@ -15,12 +14,18 @@
 
 ## 使用方法
 
-先使用il2cpp获取script.json和il2cpp.h
+建议open with option打开 
+
+选择 ![img.png](img.png)
+
+可以避免过长的反编译所有函数的等待时间
+
+
+先使用il2cpp dump获取script.json和il2cpp.h
 
 在il2cpp.h的头部增加
 
 (64位)
-
 ```
 #define intptr_t int64_t
 #define uintptr_t uint64_t
@@ -30,61 +35,14 @@
 
 导入il2cpp.h
 
-然后使用插件,选择对应的功能或all_recover即可
-选择script.json
+然后使用插件,选择对应的功能
 
-等待即可
+根据提示选中script.json 等待即可
 
 ## 不足
 
-1.没有找到自动导入头文件的api函数 只能手动导入
+没有找到自动导入头文件的api函数 只能手动导入
 
 ## 感谢
 
 感谢 @mFallW1nd 提供的优化思路，通过手动parser，获取type的方式避免了使用bv.parse_types_from_string的性能问题
-
-# English
-
-The original language is Chinese. Machine translation is used below.
-
-## il2cpp_bn
-
-Import the symbol information of il2cppdumper into binaryninja as if it were imported into ida using its own script
-
-Realized
-
-Change the function name and declaration and automatically comment the declaration
-![Alt text](image.png)
-
-Import string and comment
-
-![Alt text](image-1.png)
-
-## Usage
-
-use il2cpp to get script.json and il2cpp.h
-
-Add to the top of il2cpp.h
-
-(x64)
-
-```
-#define intptr_t int64_t
-#define uintptr_t uint64_t
-```
-
-Then search for 'Import Header File' using ctrl+p
-
-import il2cpp.h
-
-Then use the plug-in
-Select script.json
-Just wait.
-
-## Deficiency
-
-1. The api function that cannot find the automatic import header file can only be imported manually.
-
-## contribute
-
-Thanks to the optimization ideas provided by @ mFallW1nd, the way of obtaining type through manual parser avoids the performance problems of using bv.parse_types_from_string
